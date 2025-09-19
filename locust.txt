@@ -1,0 +1,98 @@
+#Locust
+
+nstalling collected packages: pywin32, brotli, setuptools, pyzmq, pytest, psutil, platformdirs, msgpack, configargparse, cffi, bidict, zope.interface, zope.event, simple-websocket, python-engineio, gevent, flask-login, flask-cors, python-socketio, geventhttpclient, locust-cloud, locust
+
+   ----------------------------------------  0/22 [pywin32]  WARNING: The scripts pywin32_postinstall.exe and pywin32_testall.exe are installed in 'C:\Users\USER\AppData\Roaming\Python\Python312\Scripts' which is not on PATH.
+
+  Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+
+  Attempting uninstall: pytest
+
+    Found existing installation: pytest 8.3.2
+
+    Uninstalling pytest-8.3.2:
+
+      Successfully uninstalled pytest-8.3.2
+
+   ------- --------------------------------  4/22 [pytest]  WARNING: The scripts py.test.exe and pytest.exe are installed in 'C:\Users\USER\AppData\Roaming\Python\Python312\Scripts' which is not on PATH.
+
+  Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+
+  Attempting uninstall: cffi
+
+    Found existing installation: cffi 1.16.0
+
+    Uninstalling cffi-1.16.0:
+
+      Successfully uninstalled cffi-1.16.0
+
+   ---------------------------------- ----- 19/22 [geventhttpclient]  WARNING: The script locust-cloud.exe is installed in 'C:\Users\USER\AppData\Roaming\Python\Python312\Scripts' which is not on PATH.
+
+  Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+
+   -------------------------------------- - 21/22 [locust]  WARNING: The script locust.exe is installed in 'C:\Users\USER\AppData\Roaming\Python\Python312\Scripts' which is not on PATH.
+
+  Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+
+Successfully installed bidict-0.23.1 brotli-1.1.0 cffi-2.0.0 configargparse-1.7.1 flask-cors-6.0.1 flask-login-0.6.3 gevent-25.5.1 geventhttpclient-2.3.4 locust-2.40.4 locust-cloud-1.26.3 msgpack-1.1.1 platformdirs-4.4.0 psutil-7.0.0 pytest-8.4.2 python-engineio-4.12.2 python-socketio-5.13.0 pywin32-311 pyzmq-27.1.0 setuptools-80.9.0 simple-websocket-1.1.0 zope.event-6.0 zope.interface-8.0
+
+
+
+C:\Users\USER>locust -v
+
+'locust' is not recognized as an internal or external command,
+
+operable program or batch file.
+
+
+
+
+Show thinking
+This error occurs because the command prompt doesn't know where to find the locust.exe program. The installation warnings you received tell you exactly why: the directory C:\Users\USER\AppData\Roaming\Python\Python312\Scripts was not added to your system's PATH environment variable.
+
+## What is the PATH?
+Think of the PATH as a list of directories that your command prompt checks every time you type a command. If the executable file (like locust.exe) isn't in any of the folders on that list, you get the 'is not recognized' error. Your installation put locust.exe in a folder, but didn't tell Windows to look for it there.
+
+## How to Fix It (Permanent Solution) 🔧
+You need to add the scripts folder to your PATH environment variable.
+
+Open Environment Variables:
+
+Press the Windows Key + S to open the search bar.
+
+Type Edit the system environment variables and press Enter.
+
+Navigate to Path:
+
+In the System Properties window that opens, click the Environment Variables... button.
+
+In the top box ("User variables for USER"), find the variable named Path and select it. Click Edit....
+
+Add the New Path:
+
+Click New.
+
+Paste the path from your warning message into the new field:
+C:\Users\USER\AppData\Roaming\Python\Python312\Scripts
+
+Click OK on all the open windows to save the changes.
+
+Restart Your Terminal:
+
+This is a crucial step! Close your current command prompt window and open a brand new one. The changes won't apply to any terminal windows that were already open.
+
+Now, try running locust -v again. It should work correctly.
+
+## Quick Alternatives (Temporary)
+If you don't want to modify your system's PATH, you can use one of these methods.
+
+Run with the full path: You can always run the command by providing its full location.
+
+Shell
+
+C:\Users\USER\AppData\Roaming\Python\Python312\Scripts\locust.exe -v
+Run as a Python module: This is often the most reliable way to run Python packages from the command line, as it doesn't depend on the PATH.
+
+Shell
+
+python -m locust -v
