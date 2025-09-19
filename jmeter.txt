@@ -1,0 +1,2270 @@
+# Jmeter VScode
+
+You can integrate JMeter with Apache Maven using the JMeter Maven Plugin. Maven uses a pom.xml file where POM stands for “Project Object Model” as a fundamental unit of work to be done. To enable JMeter integration, you must add a event to pom.xml. The Maven project structure should look like the following:
+
+ 
+
+JMeter can be integrated with Apache Maven via the JMeter Maven Plugin. Maven uses a pom.xml file where POM stands for “Project Object Model” as a fundamental unit of work to be done. To enable JMeter integration you need to add a event to pom.xml file. The Maven project structure should look as follows:
+
+ 
+
+Folder structure:
+
+ 
+
+root folder
+
+src
+
+test
+
+jmeter
+
+Test.jmx
+
+pom.xml
+
+ 
+
+Where:
+
+ 
+
+Test.jmx – can be copied???? from jmeter/extras
+
+pom.xml - see the minimum listing below?
+
+ 
+
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    4.0.0
+
+    com.blazemeter
+
+    mvn-jmeter
+
+    jar
+
+    1.0-SNAPSHOT
+
+    maven-jmeter-demo
+
+    http://maven.apache.org
+
+   
+
+       
+
+           
+
+                com.lazerycode.jmeter
+
+                jmeter-maven-plugin
+
+                1.4.1
+
+               
+
+                   
+
+                        jmeter-tests
+
+                        verify
+
+                       
+
+                            jmeter
+
+                       
+
+To kick off the test, type mvn verify or mvn install in the root folder. You should see some Maven output in the command prompt:
+
+ 
+
+For basic and advanced configuration options, consult the Maven JMeter Plugin Project Wiki.
+
+The HTML report
+
+
+
+-- i am not getting this, i have maven installed , have vs code , tell me from above methods that how will i make work jmeter in maven vscode, explain each steps as i am new to this
+
+
+
+
+Show thinking
+Of course! It can be confusing when you're starting out. Let's break it down into simple, clear steps to get your JMeter test running with Maven inside VS Code.
+
+The main idea is to use Maven to automatically download JMeter, run your test script (.jmx file), and generate a report.
+
+Prerequisites
+Before we start, make sure you have these installed:
+
+Java Development Kit (JDK): JMeter and Maven both need Java to run.
+
+Apache Maven: Make sure it's installed and configured in your system's PATH.
+
+Visual Studio Code: Your code editor.
+
+Apache JMeter: You still need the JMeter application to create your test plans. You won't use it to run the test in this process, but you need it to build the script.
+
+Step 1: Create the Project Folder Structure 📁
+First, you need to create the exact folders that Maven and the JMeter plugin expect.
+
+Create a main project folder. Let's call it my-jmeter-project.
+
+Inside my-jmeter-project, open the VS Code terminal (Ctrl+ ` or by going to Terminal > New Terminal).
+
+Type these commands one by one to create the required nested folders:
+
+Bash
+
+mkdir -p src/test/jmeter
+This single command creates the src folder, then test inside it, and finally jmeter inside that.
+
+Your folder structure inside VS Code should now look like this:
+
+my-jmeter-project/
+└── src/
+    └── test/
+        └── jmeter/
+Step 2: Create a Simple JMeter Test Plan (Test.jmx) 📝
+This is the most important part. The .jmx file is your actual test script. You create it using the JMeter GUI. The "copied from jmeter/extras" suggestion in the original text is a bit misleading; it's better to create your own.
+
+Launch the JMeter application on your computer.
+
+Right-click on Test Plan > Add > Threads (Users) > Thread Group.
+
+Right-click on Thread Group > Add > Sampler > HTTP Request.
+
+In the HTTP Request panel, enter google.com in the Server Name or IP field. This tells JMeter to send a request to Google.
+
+Save the test plan. Go to File > Save. Navigate to the folder you created in Step 1 (my-jmeter-project/src/test/jmeter/) and save the file as Test.jmx.
+
+You have now created a test script and placed it where the Maven plugin will look for it.
+
+Step 3: Create and Configure the pom.xml File ⚙️
+Now, let's create the "brain" of the project—the pom.xml file. This file tells Maven what to do.
+
+In the root of your my-jmeter-project folder (the same level as the src folder), create a new file named pom.xml.
+
+Copy and paste the complete, corrected XML code below into your pom.xml file. The snippet in your question was incomplete.
+
+XML
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.mycompany.jmeter</groupId>
+    <artifactId>my-jmeter-project</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.lazerycode.jmeter</groupId>
+                <artifactId>jmeter-maven-plugin</artifactId>
+                <version>3.7.0</version> <executions>
+                    <execution>
+                        <id>jmeter-tests</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jmeter</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+What this file does:
+
+Section 1: Basic information about your project.
+
+Section 2: Declares that you want to use the jmeter-maven-plugin. This is the tool that connects Maven to JMeter.
+
+Section 3: This is the critical "event." It tells Maven: "When you get to the verify step of your build process, execute the jmeter goal from the plugin."
+
+Step 4: Run the Test from VS Code 🚀
+Everything is now in place! Your final folder structure is:
+
+my-jmeter-project/
+├── src/
+│   └── test/
+│       └── jmeter/
+│           └── Test.jmx
+└── pom.xml
+Make sure you are in the VS Code terminal and that you are in the root directory (my-jmeter-project).
+
+Type the following command and press Enter:
+
+Bash
+
+mvn verify
+Watch the magic happen! Maven will start running. The first time, it will download the JMeter plugin and JMeter itself. Then, it will find your Test.jmx file, run the test in the background (you won't see the JMeter GUI), and show the results in the terminal.
+
+If everything worked, you will see a lot of text, ending with a message like:
+
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+Step 5: Check the HTML Report ✅
+The best part of using this plugin is the automatic report generation.
+
+After the mvn verify command succeeds, a new folder called target will appear in your project directory.
+
+Navigate into target/jmeter/reports/.
+
+You will find a folder named after your .jmx file (e.g., Test-20250917).
+
+Inside that folder, open the index.html file in a web browser.
+
+You will see a beautiful, detailed dashboard with graphs and statistics about your test run.
+
+That's it! You have successfully configured and run a JMeter test using Maven from within VS Code. You can now create more complex .jmx files and run them the same way.
+
+
+
+
+
+
+
+PS C:\Users\USER\Downloads\my-jmeter-project> mkdir -p src/test/jmeter
+
+
+
+
+
+    Directory: C:\Users\USER\Downloads\my-jmeter-project\src\test
+
+
+
+
+
+Mode                 LastWriteTime         Length Name
+
+----                 -------------         ------ ----
+
+d-----        17-09-2025     15:05                jmeter
+
+
+
+
+
+PS C:\Users\USER\Downloads\my-jmeter-project> mvn verify
+
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+
+WARNING: sun.misc.Unsafe::staticFieldBase has been called by com.google.inject.internal.aop.HiddenClassDefiner (file:/C:/Program%20Files/Apache/Maven/apache-maven-3.9.11/lib/guice-5.1.0-classes.jar)
+
+WARNING: Please consider reporting this to the maintainers of class com.google.inject.internal.aop.HiddenClassDefiner
+
+WARNING: sun.misc.Unsafe::staticFieldBase will be removed in a future release
+
+[INFO] Scanning for projects...
+
+[INFO] 
+
+[INFO] ---------------< com.mycompany.jmeter:my-jmeter-project >---------------
+
+[INFO] Building my-jmeter-project 1.0-SNAPSHOT
+
+[INFO]   from pom.xml
+
+[INFO] --------------------------------[ jar ]---------------------------------
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-compiler-plugin/3.13.0/maven-compiler-plugin-3.13.0.pom
+
+[INFO] ------------------------------------------------------------------------
+
+[INFO] BUILD FAILURE
+
+[INFO] ------------------------------------------------------------------------
+
+[INFO] Total time:  0.765 s
+
+[INFO] Finished at: 2025-09-17T15:18:53+05:30
+
+[INFO] ------------------------------------------------------------------------
+
+[ERROR] Plugin org.apache.maven.plugins:maven-compiler-plugin:3.13.0 or one of its dependencies could not be resolved:
+
+[ERROR]         The following artifacts could not be resolved: org.apache.maven.plugins:maven-compiler-plugin:pom:3.13.0 (absent): Could not transfer artifact org.apache.maven.plugins:maven-compiler-plugin:pom:3.13.0 from/to central (https://repo.maven.apache.org/maven2): (certificate_unknown) PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
+
+[ERROR] -> [Help 1]
+
+[ERROR]
+
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+
+[ERROR]
+
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/PluginResolutionException
+
+PS C:\Users\USER\Downloads\my-jmeter-project>
+
+
+
+
+Show thinking
+Excellent! You've successfully set up the project and tried to run it. The error you're seeing is very common and thankfully, the log tells us exactly what's wrong.
+
+This is not a problem with your pom.xml or JMeter setup. It's a network security issue.
+
+The Problem Explained Simply 💡
+The key line in your error log is:
+PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
+
+In simple terms, your Java/Maven environment is trying to download necessary files from the internet (https://repo.maven.apache.org), but it doesn't trust the security certificate of that website. This is like a web browser showing a "Your Connection is Not Private" error. It's a security check that is failing.
+
+This most often happens when you are on a corporate, school, or otherwise filtered network that uses its own security certificates.
+
+Solution: Import the Security Certificate into Java 🔑
+The proper way to fix this is to tell Java to trust your organization's security certificate.
+
+Step 1: Get the Certificate File
+You will need to get the security certificate file (usually a .cer or .pem file) from your company's IT department. Ask them for the "root SSL certificate" or "proxy certificate" needed for development tools.
+
+Step 2: Find Your Java cacerts File
+This is Java's master file of trusted certificates, called a "truststore." It's located inside your JDK installation folder. The path will look something like this:
+
+C:\Program Files\Java\jdk-17\lib\security\cacerts
+
+C:\Program Files\Amazon Corretto\jdk11.0.15_9\lib\security\cacerts
+
+Step 3: Run the keytool Command
+keytool is a Java utility used to manage certificates.
+
+Open a new terminal or PowerShell as an Administrator. This is very important, as you need permission to modify files in C:\Program Files.
+
+Navigate to your JDK's bin directory. For example: cd "C:\Program Files\Java\jdk-17\bin"
+
+Run the following command. You will need to replace the placeholder paths with your actual file paths.
+
+PowerShell
+
+./keytool.exe -importcert -alias "my-company-cert" -file "C:\path\to\your\company_certificate.cer" -keystore "C:\Program Files\Java\jdk-17\lib\security\cacerts" -storepass changeit
+-alias: A unique nickname for the certificate. You can name it anything.
+
+-file: The full path to the certificate file you got from IT.
+
+-keystore: The full path to your cacerts file.
+
+-storepass: The default password for the cacerts file is almost always changeit.
+
+The tool will ask Trust this certificate? [no]:. Type yes and press Enter.
+
+What to Do Now ✅
+Follow the steps above. If you're on a corporate network, this is almost certainly the correct solution.
+
+Close and reopen VS Code to ensure the new terminal session recognizes the changes.
+
+Go back to your project folder (my-jmeter-project) in the terminal.
+
+Run the command again:
+
+Bash
+
+mvn verify
+It should now be able to securely connect to the Maven repository, download the necessary plugins, and run your JMeter test successfully!
+
+(Note: The WARNING messages about sun.misc.Unsafe at the top of your log are not related to the build failure. They come from a dependency of Maven and can be safely ignored.)
+
+
+
+
+
+
+
+PS C:\Users\USER\Downloads\my-jmeter-project> mvn verify
+
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+
+WARNING: sun.misc.Unsafe::staticFieldBase has been called by com.google.inject.internal.aop.HiddenClassDefiner (file:/C:/Program%20Files/Apache/Maven/apache-maven-3.9.11/lib/guice-5.1.0-classes.jar)
+
+WARNING: Please consider reporting this to the maintainers of class com.google.inject.internal.aop.HiddenClassDefiner
+
+WARNING: sun.misc.Unsafe::staticFieldBase will be removed in a future release
+
+[INFO] Scanning for projects...
+
+[INFO] 
+
+[INFO] ---------------< com.mycompany.jmeter:my-jmeter-project >---------------
+
+[INFO] Building my-jmeter-project 1.0-SNAPSHOT
+
+[INFO]   from pom.xml
+
+[INFO] --------------------------------[ jar ]---------------------------------
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-compiler-plugin/3.13.0/maven-compiler-plugin-3.13.0.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-compiler-plugin/3.13.0/maven-compiler-plugin-3.13.0.pom (10 kB at 38 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-plugins/41/maven-plugins-41.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-plugins/41/maven-plugins-41.pom (7.4 kB at 433 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-parent/41/maven-parent-41.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-parent/41/maven-parent-41.pom (50 kB at 1.7 MB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-compiler-plugin/3.13.0/maven-compiler-plugin-3.13.0.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-compiler-plugin/3.13.0/maven-compiler-plugin-3.13.0.jar (83 kB at 1.4 MB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-surefire-plugin/3.2.5/maven-surefire-plugin-3.2.5.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-surefire-plugin/3.2.5/maven-surefire-plugin-3.2.5.pom (5.3 kB at 152 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire/3.2.5/surefire-3.2.5.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire/3.2.5/surefire-3.2.5.pom (22 kB at 998 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-surefire-plugin/3.2.5/maven-surefire-plugin-3.2.5.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-surefire-plugin/3.2.5/maven-surefire-plugin-3.2.5.jar (45 kB at 1.3 MB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-jar-plugin/3.4.1/maven-jar-plugin-3.4.1.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-jar-plugin/3.4.1/maven-jar-plugin-3.4.1.pom (7.8 kB at 601 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-plugins/42/maven-plugins-42.pom        
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-plugins/42/maven-plugins-42.pom (7.7 kB at 549 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-parent/42/maven-parent-42.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-parent/42/maven-parent-42.pom (50 kB at 2.3 MB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/apache/32/apache-32.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/apache/32/apache-32.pom (24 kB at 1.6 MB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/junit/junit-bom/5.10.2/junit-bom-5.10.2.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/junit/junit-bom/5.10.2/junit-bom-5.10.2.pom (5.6 kB at 353 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-jar-plugin/3.4.1/maven-jar-plugin-3.4.1.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-jar-plugin/3.4.1/maven-jar-plugin-3.4.1.jar (34 kB at 1.9 MB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/com/lazerycode/jmeter/jmeter-maven-plugin/3.7.0/jmeter-maven-plugin-3.7.0.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/com/lazerycode/jmeter/jmeter-maven-plugin/3.7.0/jmeter-maven-plugin-3.7.0.pom (24 kB at 1.2 MB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/com/lazerycode/jmeter/jmeter-maven-plugin/3.7.0/jmeter-maven-plugin-3.7.0.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/com/lazerycode/jmeter/jmeter-maven-plugin/3.7.0/jmeter-maven-plugin-3.7.0.jar (99 kB at 317 kB/s)
+
+[INFO] 
+
+[INFO] --- resources:3.3.1:resources (default-resources) @ my-jmeter-project ---
+
+[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+
+[INFO] skip non existing resourceDirectory C:\Users\USER\Downloads\my-jmeter-project\src\main\resources
+
+[INFO]
+
+[INFO] --- compiler:3.13.0:compile (default-compile) @ my-jmeter-project ---
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-shared-utils/3.4.2/maven-shared-utils-3.4.2.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-shared-utils/3.4.2/maven-shared-utils-3.4.2.pom (5.9 kB at 454 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-compiler-api/2.15.0/plexus-compiler-api-2.15.0.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-compiler-api/2.15.0/plexus-compiler-api-2.15.0.pom (1.4 kB at 105 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-compiler/2.15.0/plexus-compiler-2.15.0.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-compiler/2.15.0/plexus-compiler-2.15.0.pom (7.6 kB at 507 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus/17/plexus-17.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus/17/plexus-17.pom (28 kB at 1.9 MB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-compiler-manager/2.15.0/plexus-compiler-manager-2.15.0.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-compiler-manager/2.15.0/plexus-compiler-manager-2.15.0.pom (1.3 kB at 104 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-xml/3.0.0/plexus-xml-3.0.0.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-xml/3.0.0/plexus-xml-3.0.0.pom (3.7 kB at 288 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-compiler-javac/2.15.0/plexus-compiler-javac-2.15.0.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-compiler-javac/2.15.0/plexus-compiler-javac-2.15.0.pom (1.3 kB at 92 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-compilers/2.15.0/plexus-compilers-2.15.0.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-compilers/2.15.0/plexus-compilers-2.15.0.pom (1.6 kB at 112 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-shared-utils/3.4.2/maven-shared-utils-3.4.2.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-shared-utils/3.4.2/maven-shared-utils-3.4.2.jar (151 kB at 4.0 MB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-compiler-api/2.15.0/plexus-compiler-api-2.15.0.jar
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-compiler-manager/2.15.0/plexus-compiler-manager-2.15.0.jar
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-xml/3.0.0/plexus-xml-3.0.0.jar
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-compiler-javac/2.15.0/plexus-compiler-javac-2.15.0.jar
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/4.0.0/plexus-utils-4.0.0.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-compiler-javac/2.15.0/plexus-compiler-javac-2.15.0.jar (26 kB at 201 kB/s)
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-xml/3.0.0/plexus-xml-3.0.0.jar (93 kB at 655 kB/s)
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-compiler-api/2.15.0/plexus-compiler-api-2.15.0.jar (29 kB at 116 kB/s)
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-compiler-manager/2.15.0/plexus-compiler-manager-2.15.0.jar (5.2 kB at 21 kB/s)
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/4.0.0/plexus-utils-4.0.0.jar (192 kB at 576 kB/s)
+
+[INFO] No sources to compile
+
+[INFO]
+
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ my-jmeter-project ---
+
+[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+
+[INFO] skip non existing resourceDirectory C:\Users\USER\Downloads\my-jmeter-project\src\test\resources
+
+[INFO]
+
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ my-jmeter-project ---
+
+[INFO] No sources to compile
+
+[INFO]
+
+[INFO] --- surefire:3.2.5:test (default-test) @ my-jmeter-project ---
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/maven-surefire-common/3.2.5/maven-surefire-common-3.2.5.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/maven-surefire-common/3.2.5/maven-surefire-common-3.2.5.pom (6.2 kB at 367 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-api/3.2.5/surefire-api-3.2.5.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-api/3.2.5/surefire-api-3.2.5.pom (3.5 kB at 235 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-logger-api/3.2.5/surefire-logger-api-3.2.5.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-logger-api/3.2.5/surefire-logger-api-3.2.5.pom (3.3 kB at 217 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-shared-utils/3.2.5/surefire-shared-utils-3.2.5.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-shared-utils/3.2.5/surefire-shared-utils-3.2.5.pom (4.1 kB at 312 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-extensions-api/3.2.5/surefire-extensions-api-3.2.5.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-extensions-api/3.2.5/surefire-extensions-api-3.2.5.pom (3.3 kB at 220 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-booter/3.2.5/surefire-booter-3.2.5.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-booter/3.2.5/surefire-booter-3.2.5.pom (4.5 kB at 212 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-extensions-spi/3.2.5/surefire-extensions-spi-3.2.5.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-extensions-spi/3.2.5/surefire-extensions-spi-3.2.5.pom (1.8 kB at 126 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/commons-io/commons-io/2.15.1/commons-io-2.15.1.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/commons-io/commons-io/2.15.1/commons-io-2.15.1.pom (20 kB at 998 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/maven-surefire-common/3.2.5/maven-surefire-common-3.2.5.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/maven-surefire-common/3.2.5/maven-surefire-common-3.2.5.jar (308 kB at 1.8 MB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-api/3.2.5/surefire-api-3.2.5.jar   
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-logger-api/3.2.5/surefire-logger-api-3.2.5.jar
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-extensions-api/3.2.5/surefire-extensions-api-3.2.5.jar
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-booter/3.2.5/surefire-booter-3.2.5.jar
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-extensions-spi/3.2.5/surefire-extensions-spi-3.2.5.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-logger-api/3.2.5/surefire-logger-api-3.2.5.jar (14 kB at 302 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/commons-io/commons-io/2.15.1/commons-io-2.15.1.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-extensions-api/3.2.5/surefire-extensions-api-3.2.5.jar (26 kB at 159 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-shared-utils/3.2.5/surefire-shared-utils-3.2.5.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-extensions-spi/3.2.5/surefire-extensions-spi-3.2.5.jar (8.2 kB at 30 kB/s)
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-booter/3.2.5/surefire-booter-3.2.5.jar (118 kB at 295 kB/s)
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-api/3.2.5/surefire-api-3.2.5.jar (171 kB at 212 kB/s)
+
+Downloaded from central: https://repo.maven.apache.org/maven2/commons-io/commons-io/2.15.1/commons-io-2.15.1.jar (501 kB at 386 kB/s)
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-shared-utils/3.2.5/surefire-shared-utils-3.2.5.jar (2.4 MB at 886 kB/s)
+
+[INFO] No tests to run.
+
+[INFO]
+
+[INFO] --- jar:3.4.1:jar (default-jar) @ my-jmeter-project ---
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/4.0.1/plexus-utils-4.0.1.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/4.0.1/plexus-utils-4.0.1.pom (7.8 kB at 412 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/commons-io/commons-io/2.16.1/commons-io-2.16.1.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/commons-io/commons-io/2.16.1/commons-io-2.16.1.pom (20 kB at 727 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/commons/commons-parent/69/commons-parent-69.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/commons/commons-parent/69/commons-parent-69.pom (77 kB at 1.3 MB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-archiver/3.6.2/maven-archiver-3.6.2.pom        
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-archiver/3.6.2/maven-archiver-3.6.2.pom (4.4 kB at 292 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-shared-components/41/maven-shared-components-41.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-shared-components/41/maven-shared-components-41.pom (3.2 kB at 212 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/4.9.2/plexus-archiver-4.9.2.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/4.9.2/plexus-archiver-4.9.2.pom (6.0 kB at 352 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-io/3.4.2/plexus-io-3.4.2.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-io/3.4.2/plexus-io-3.4.2.pom (3.9 kB at 241 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus/16/plexus-16.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus/16/plexus-16.pom (28 kB at 864 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.26.1/commons-compress-1.26.1.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.26.1/commons-compress-1.26.1.pom (22 kB at 621 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/commons/commons-parent/66/commons-parent-66.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/commons/commons-parent/66/commons-parent-66.pom (77 kB at 1.2 MB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.16.1/commons-codec-1.16.1.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.16.1/commons-codec-1.16.1.pom (16 kB at 825 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.14.0/commons-lang3-3.14.0.pom      
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.14.0/commons-lang3-3.14.0.pom (31 kB at 1.4 MB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/commons/commons-parent/64/commons-parent-64.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/commons/commons-parent/64/commons-parent-64.pom (78 kB at 1.7 MB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/com/github/luben/zstd-jni/1.5.5-11/zstd-jni-1.5.5-11.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/com/github/luben/zstd-jni/1.5.5-11/zstd-jni-1.5.5-11.pom (2.0 kB at 126 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interpolation/1.27/plexus-interpolation-1.27.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interpolation/1.27/plexus-interpolation-1.27.pom (3.0 kB at 216 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/commons-io/commons-io/2.16.1/commons-io-2.16.1.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/commons-io/commons-io/2.16.1/commons-io-2.16.1.jar (509 kB at 1.4 MB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-archiver/3.6.2/maven-archiver-3.6.2.jar        
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interpolation/1.27/plexus-interpolation-1.27.jar
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/4.0.1/plexus-utils-4.0.1.jar
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/4.9.2/plexus-archiver-4.9.2.jar   
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-io/3.4.2/plexus-io-3.4.2.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-archiver/3.6.2/maven-archiver-3.6.2.jar (27 kB at 209 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.26.1/commons-compress-1.26.1.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interpolation/1.27/plexus-interpolation-1.27.jar (86 kB at 249 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.14.0/commons-lang3-3.14.0.jar      
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/4.0.1/plexus-utils-4.0.1.jar (193 kB at 258 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.16.1/commons-codec-1.16.1.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-io/3.4.2/plexus-io-3.4.2.jar (79 kB at 106 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/com/github/luben/zstd-jni/1.5.5-11/zstd-jni-1.5.5-11.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/4.9.2/plexus-archiver-4.9.2.jar (225 kB at 292 kB/s)
+
+Downloaded from central: https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.16.1/commons-codec-1.16.1.jar (365 kB at 197 kB/s)
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.14.0/commons-lang3-3.14.0.jar (658 kB at 247 kB/s)
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.26.1/commons-compress-1.26.1.jar (1.1 MB at 395 kB/s)
+
+Downloaded from central: https://repo.maven.apache.org/maven2/com/github/luben/zstd-jni/1.5.5-11/zstd-jni-1.5.5-11.jar (6.8 MB at 852 kB/s)
+
+[WARNING] JAR will be empty - no content was marked for inclusion!
+
+[INFO] Building jar: C:\Users\USER\Downloads\my-jmeter-project\target\my-jmeter-project-1.0-SNAPSHOT.jar
+
+[INFO] 
+
+[INFO] --- jmeter:3.7.0:jmeter (jmeter-tests) @ my-jmeter-project ---
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-api/3.5.2/maven-plugin-api-3.5.2.pom    
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-api/3.5.2/maven-plugin-api-3.5.2.pom (2.9 kB at 98 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven/3.5.2/maven-3.5.2.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven/3.5.2/maven-3.5.2.pom (25 kB at 539 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-parent/27/maven-parent-27.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-parent/27/maven-parent-27.pom (41 kB at 947 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/apache/17/apache-17.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/apache/17/apache-17.pom (16 kB at 669 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-model/3.5.2/maven-model-3.5.2.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-model/3.5.2/maven-model-3.5.2.pom (4.0 kB at 175 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/3.1.0/plexus-utils-3.1.0.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/3.1.0/plexus-utils-3.1.0.pom (4.7 kB at 186 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.5/commons-lang3-3.5.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.5/commons-lang3-3.5.pom (23 kB at 834 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/commons/commons-parent/41/commons-parent-41.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/commons/commons-parent/41/commons-parent-41.pom (65 kB at 1.5 MB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact/3.5.2/maven-artifact-3.5.2.pom        
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact/3.5.2/maven-artifact-3.5.2.pom (2.1 kB at 111 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/eclipse/sisu/org.eclipse.sisu.plexus/0.3.3/org.eclipse.sisu.plexus-0.3.3.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/eclipse/sisu/org.eclipse.sisu.plexus/0.3.3/org.eclipse.sisu.plexus-0.3.3.pom (4.2 kB at 149 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/eclipse/sisu/sisu-plexus/0.3.3/sisu-plexus-0.3.3.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/eclipse/sisu/sisu-plexus/0.3.3/sisu-plexus-0.3.3.pom (14 kB at 490 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/javax/enterprise/cdi-api/1.0/cdi-api-1.0.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/javax/enterprise/cdi-api/1.0/cdi-api-1.0.pom (1.4 kB at 84 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api-parent/1.0/weld-api-parent-1.0.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api-parent/1.0/weld-api-parent-1.0.pom (2.4 kB at 181 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api-bom/1.0/weld-api-bom-1.0.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api-bom/1.0/weld-api-bom-1.0.pom (7.9 kB at 494 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/jboss/weld/weld-parent/6/weld-parent-6.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/jboss/weld/weld-parent/6/weld-parent-6.pom (21 kB at 1.0 MB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/javax/annotation/jsr250-api/1.0/jsr250-api-1.0.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/javax/annotation/jsr250-api/1.0/jsr250-api-1.0.pom (1.0 kB at 73 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/eclipse/sisu/org.eclipse.sisu.inject/0.3.3/org.eclipse.sisu.inject-0.3.3.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/eclipse/sisu/org.eclipse.sisu.inject/0.3.3/org.eclipse.sisu.inject-0.3.3.pom (2.6 kB at 188 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/eclipse/sisu/sisu-inject/0.3.3/sisu-inject-0.3.3.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/eclipse/sisu/sisu-inject/0.3.3/sisu-inject-0.3.3.pom (14 kB at 800 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/3.0.17/plexus-utils-3.0.17.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/3.0.17/plexus-utils-3.0.17.pom (3.4 kB at 212 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/3.5.2/maven-core-3.5.2.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/3.5.2/maven-core-3.5.2.pom (8.8 kB at 517 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings/3.5.2/maven-settings-3.5.2.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings/3.5.2/maven-settings-3.5.2.pom (1.8 kB at 141 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings-builder/3.5.2/maven-settings-builder-3.5.2.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings-builder/3.5.2/maven-settings-builder-3.5.2.pom (2.6 kB at 201 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-builder-support/3.5.2/maven-builder-support-3.5.2.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-builder-support/3.5.2/maven-builder-support-3.5.2.pom (1.5 kB at 102 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interpolation/1.24/plexus-interpolation-1.24.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interpolation/1.24/plexus-interpolation-1.24.pom (2.6 kB at 175 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/sonatype/plexus/plexus-sec-dispatcher/1.4/plexus-sec-dispatcher-1.4.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/sonatype/plexus/plexus-sec-dispatcher/1.4/plexus-sec-dispatcher-1.4.pom (3.0 kB at 148 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-repository-metadata/3.5.2/maven-repository-metadata-3.5.2.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-repository-metadata/3.5.2/maven-repository-metadata-3.5.2.pom (1.9 kB at 100 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-model-builder/3.5.2/maven-model-builder-3.5.2.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-model-builder/3.5.2/maven-model-builder-3.5.2.pom (3.1 kB at 185 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/com/google/guava/guava/20.0/guava-20.0.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/com/google/guava/guava/20.0/guava-20.0.pom (6.8 kB at 326 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/com/google/guava/guava-parent/20.0/guava-parent-20.0.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/com/google/guava/guava-parent/20.0/guava-parent-20.0.pom (9.9 kB at 495 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-resolver-provider/3.5.2/maven-resolver-provider-3.5.2.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-resolver-provider/3.5.2/maven-resolver-provider-3.5.2.pom (4.2 kB at 221 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-api/1.1.0/maven-resolver-api-1.1.0.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-api/1.1.0/maven-resolver-api-1.1.0.pom (1.9 kB at 82 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/1.1.0/maven-resolver-1.1.0.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/1.1.0/maven-resolver-1.1.0.pom (16 kB at 657 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-spi/1.1.0/maven-resolver-spi-1.1.0.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-spi/1.1.0/maven-resolver-spi-1.1.0.pom (2.1 kB at 122 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-util/1.1.0/maven-resolver-util-1.1.0.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-util/1.1.0/maven-resolver-util-1.1.0.pom (2.2 kB at 117 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-impl/1.1.0/maven-resolver-impl-1.1.0.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-impl/1.1.0/maven-resolver-impl-1.1.0.pom (3.5 kB at 165 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-shared-utils/3.1.0/maven-shared-utils-3.1.0.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-shared-utils/3.1.0/maven-shared-utils-3.1.0.pom (5.0 kB at 199 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/com/google/inject/guice/4.0/guice-4.0.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/com/google/inject/guice/4.0/guice-4.0.pom (11 kB at 166 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/com/google/inject/guice-parent/4.0/guice-parent-4.0.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/com/google/inject/guice-parent/4.0/guice-parent-4.0.pom (15 kB at 469 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/com/google/google/5/google-5.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/com/google/google/5/google-5.pom (2.5 kB at 137 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-api/1.9.2/maven-resolver-api-1.9.2.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-api/1.9.2/maven-resolver-api-1.9.2.pom (2.7 kB at 8.8 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/1.9.2/maven-resolver-1.9.2.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/1.9.2/maven-resolver-1.9.2.pom (24 kB at 76 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.14.1/jackson-core-2.14.1.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.14.1/jackson-core-2.14.1.pom (7.0 kB at 413 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/jackson-base/2.14.1/jackson-base-2.14.1.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/jackson-base/2.14.1/jackson-base-2.14.1.pom (10 kB at 511 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/jackson-bom/2.14.1/jackson-bom-2.14.1.pom       
+
+Downloaded from central: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/jackson-bom/2.14.1/jackson-bom-2.14.1.pom (17 kB at 833 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/jackson-parent/2.14/jackson-parent-2.14.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/jackson-parent/2.14/jackson-parent-2.14.pom (7.7 kB at 511 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/com/fasterxml/oss-parent/48/oss-parent-48.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/com/fasterxml/oss-parent/48/oss-parent-48.pom (24 kB at 1.1 MB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.14.1/jackson-databind-2.14.1.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.14.1/jackson-databind-2.14.1.pom (19 kB at 925 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.14.1/jackson-annotations-2.14.1.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.14.1/jackson-annotations-2.14.1.pom (6.2 kB at 388 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-csv/2.14.1/jackson-dataformat-csv-2.14.1.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-csv/2.14.1/jackson-dataformat-csv-2.14.1.pom (3.0 kB at 228 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformats-text/2.14.1/jackson-dataformats-text-2.14.1.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformats-text/2.14.1/jackson-dataformats-text-2.14.1.pom (3.4 kB at 223 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/com/jayway/jsonpath/json-path/2.7.0/json-path-2.7.0.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/com/jayway/jsonpath/json-path/2.7.0/json-path-2.7.0.pom (3.1 kB at 237 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/net/minidev/json-smart/2.4.7/json-smart-2.4.7.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/net/minidev/json-smart/2.4.7/json-smart-2.4.7.pom (8.2 kB at 545 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/net/minidev/accessors-smart/2.4.7/accessors-smart-2.4.7.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/net/minidev/accessors-smart/2.4.7/accessors-smart-2.4.7.pom (9.9 kB at 620 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/ow2/asm/asm/9.1/asm-9.1.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/ow2/asm/asm/9.1/asm-9.1.pom (2.4 kB at 197 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/slf4j/slf4j-api/1.7.33/slf4j-api-1.7.33.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/slf4j/slf4j-api/1.7.33/slf4j-api-1.7.33.pom (3.8 kB at 320 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/slf4j/slf4j-parent/1.7.33/slf4j-parent-1.7.33.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/slf4j/slf4j-parent/1.7.33/slf4j-parent-1.7.33.pom (14 kB at 741 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/ch/qos/logback/logback-core/1.2.11/logback-core-1.2.11.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/ch/qos/logback/logback-core/1.2.11/logback-core-1.2.11.pom (4.2 kB at 321 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/ch/qos/logback/logback-parent/1.2.11/logback-parent-1.2.11.pom        
+
+Downloaded from central: https://repo.maven.apache.org/maven2/ch/qos/logback/logback-parent/1.2.11/logback-parent-1.2.11.pom (19 kB at 918 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/ch/qos/logback/logback-classic/1.2.11/logback-classic-1.2.11.pom      
+
+Downloaded from central: https://repo.maven.apache.org/maven2/ch/qos/logback/logback-classic/1.2.11/logback-classic-1.2.11.pom (9.7 kB at 484 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/slf4j/slf4j-api/1.7.32/slf4j-api-1.7.32.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/slf4j/slf4j-api/1.7.32/slf4j-api-1.7.32.pom (3.8 kB at 274 kB/s)   
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/slf4j/slf4j-parent/1.7.32/slf4j-parent-1.7.32.pom
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/slf4j/slf4j-parent/1.7.32/slf4j-parent-1.7.32.pom (14 kB at 863 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-api/3.5.2/maven-plugin-api-3.5.2.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-api/3.5.2/maven-plugin-api-3.5.2.jar (48 kB at 1.4 MB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-model/3.5.2/maven-model-3.5.2.jar
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact/3.5.2/maven-artifact-3.5.2.jar        
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/eclipse/sisu/org.eclipse.sisu.plexus/0.3.3/org.eclipse.sisu.plexus-0.3.3.jar
+
+Downloading from central: https://repo.maven.apache.org/maven2/javax/enterprise/cdi-api/1.0/cdi-api-1.0.jar
+
+Downloading from central: https://repo.maven.apache.org/maven2/javax/annotation/jsr250-api/1.0/jsr250-api-1.0.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/javax/annotation/jsr250-api/1.0/jsr250-api-1.0.jar (5.8 kB at 209 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/3.1.0/plexus-utils-3.1.0.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/javax/enterprise/cdi-api/1.0/cdi-api-1.0.jar (45 kB at 1.5 MB/s)       
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-classworlds/2.5.2/plexus-classworlds-2.5.2.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact/3.5.2/maven-artifact-3.5.2.jar (55 kB at 179 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/3.5.2/maven-core-3.5.2.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-classworlds/2.5.2/plexus-classworlds-2.5.2.jar (53 kB at 156 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings/3.5.2/maven-settings-3.5.2.jar        
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/eclipse/sisu/org.eclipse.sisu.plexus/0.3.3/org.eclipse.sisu.plexus-0.3.3.jar (205 kB at 338 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings-builder/3.5.2/maven-settings-builder-3.5.2.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-model/3.5.2/maven-model-3.5.2.jar (165 kB at 237 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interpolation/1.24/plexus-interpolation-1.24.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings-builder/3.5.2/maven-settings-builder-3.5.2.jar (43 kB at 61 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/sonatype/plexus/plexus-sec-dispatcher/1.4/plexus-sec-dispatcher-1.4.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/sonatype/plexus/plexus-sec-dispatcher/1.4/plexus-sec-dispatcher-1.4.jar (28 kB at 36 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-builder-support/3.5.2/maven-builder-support-3.5.2.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-builder-support/3.5.2/maven-builder-support-3.5.2.jar (15 kB at 18 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-repository-metadata/3.5.2/maven-repository-metadata-3.5.2.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/3.1.0/plexus-utils-3.1.0.jar (262 kB at 313 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-model-builder/3.5.2/maven-model-builder-3.5.2.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings/3.5.2/maven-settings-3.5.2.jar (45 kB at 52 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-resolver-provider/3.5.2/maven-resolver-provider-3.5.2.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-repository-metadata/3.5.2/maven-repository-metadata-3.5.2.jar (27 kB at 29 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-impl/1.1.0/maven-resolver-impl-1.1.0.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interpolation/1.24/plexus-interpolation-1.24.jar (79 kB at 75 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-spi/1.1.0/maven-resolver-spi-1.1.0.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-spi/1.1.0/maven-resolver-spi-1.1.0.jar (36 kB at 29 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-util/1.1.0/maven-resolver-util-1.1.0.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-resolver-provider/3.5.2/maven-resolver-provider-3.5.2.jar (68 kB at 52 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-shared-utils/3.1.0/maven-shared-utils-3.1.0.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-model-builder/3.5.2/maven-model-builder-3.5.2.jar (180 kB at 114 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/eclipse/sisu/org.eclipse.sisu.inject/0.3.3/org.eclipse.sisu.inject-0.3.3.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-impl/1.1.0/maven-resolver-impl-1.1.0.jar (185 kB at 114 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/com/google/inject/guice/4.0/guice-4.0-no_aop.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-shared-utils/3.1.0/maven-shared-utils-3.1.0.jar (164 kB at 88 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/aopalliance/aopalliance/1.0/aopalliance-1.0.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/aopalliance/aopalliance/1.0/aopalliance-1.0.jar (4.5 kB at 2.3 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/com/google/guava/guava/20.0/guava-20.0.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-util/1.1.0/maven-resolver-util-1.1.0.jar (159 kB at 77 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.5/commons-lang3-3.5.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/3.5.2/maven-core-3.5.2.jar (630 kB at 266 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-api/1.9.2/maven-resolver-api-1.9.2.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/com/google/inject/guice/4.0/guice-4.0-no_aop.jar (424 kB at 151 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.14.1/jackson-core-2.14.1.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/eclipse/sisu/org.eclipse.sisu.inject/0.3.3/org.eclipse.sisu.inject-0.3.3.jar (379 kB at 114 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.14.1/jackson-databind-2.14.1.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-api/1.9.2/maven-resolver-api-1.9.2.jar (156 kB at 41 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.14.1/jackson-annotations-2.14.1.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.14.1/jackson-annotations-2.14.1.jar (76 kB at 18 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-csv/2.14.1/jackson-dataformat-csv-2.14.1.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.14.1/jackson-core-2.14.1.jar (459 kB at 106 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/com/jayway/jsonpath/json-path/2.7.0/json-path-2.7.0.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.5/commons-lang3-3.5.jar (480 kB at 108 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/net/minidev/json-smart/2.4.7/json-smart-2.4.7.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/net/minidev/json-smart/2.4.7/json-smart-2.4.7.jar (119 kB at 25 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/net/minidev/accessors-smart/2.4.7/accessors-smart-2.4.7.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/net/minidev/accessors-smart/2.4.7/accessors-smart-2.4.7.jar (29 kB at 6.0 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/org/ow2/asm/asm/9.1/asm-9.1.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-csv/2.14.1/jackson-dataformat-csv-2.14.1.jar (104 kB at 21 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/ch/qos/logback/logback-core/1.2.11/logback-core-1.2.11.jar
+
+Downloaded from central: https://repo.maven.apache.org/maven2/com/jayway/jsonpath/json-path/2.7.0/json-path-2.7.0.jar (271 kB at 50 kB/s)
+
+Downloading from central: https://repo.maven.apache.org/maven2/ch/qos/logback/logback-classic/1.2.11/logback-classic-1.2.11.jar      
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/ow2/asm/asm/9.1/asm-9.1.jar (122 kB at 22 kB/s)
+
+Downloaded from central: https://repo.maven.apache.org/maven2/ch/qos/logback/logback-classic/1.2.11/logback-classic-1.2.11.jar (232 kB at 38 kB/s)
+
+Downloaded from central: https://repo.maven.apache.org/maven2/ch/qos/logback/logback-core/1.2.11/logback-core-1.2.11.jar (449 kB at 69 kB/s)
+
+Downloaded from central: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.14.1/jackson-databind-2.14.1.jar (1.6 MB at 212 kB/s)
+
+Downloaded from central: https://repo.maven.apache.org/maven2/com/google/guava/guava/20.0/guava-20.0.jar (2.4 MB at 304 kB/s)
+
+[INFO]  
+
+[INFO] -------------------------------------------------------
+
+[INFO]  P E R F O R M A N C E    T E S T S
+
+[INFO] -------------------------------------------------------
+
+[INFO]
+
+[INFO] ------------------------------------------------------------------------
+
+[INFO] BUILD FAILURE
+
+[INFO] ------------------------------------------------------------------------
+
+[INFO] Total time:  24.969 s
+
+[INFO] Finished at: 2025-09-17T15:41:47+05:30
+
+[INFO] ------------------------------------------------------------------------
+
+[ERROR] Failed to execute goal com.lazerycode.jmeter:jmeter-maven-plugin:3.7.0:jmeter (jmeter-tests) on project my-jmeter-project:   
+
+[ERROR]
+
+[ERROR] C:\Users\USER\Downloads\my-jmeter-project\target\config.json (The system cannot find the file specified)
+
+[ERROR]
+
+[ERROR] Possible Cause 1: Have you added the configure goal to your POM?
+
+[ERROR]
+
+[ERROR]     <execution>
+
+[ERROR]         <id>configuration</id>
+
+[ERROR]         <goals>
+
+[ERROR]             <goal>configure</goal>
+
+[ERROR]         </goals>
+
+[ERROR]     </execution>
+
+[ERROR]
+
+[ERROR] Possible Cause 2: Have you run `mvn jmeter:configure` for your current Execution ID?
+
+[ERROR]
+
+[ERROR] Current Execution ID: configuration
+
+[ERROR]
+
+[ERROR] -> [Help 1]
+
+[ERROR]
+
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+
+[ERROR]
+
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+
+
+
+
+Show thinking
+Excellent news! Your log shows that you have successfully fixed the network certificate issue. 🎉 Maven is now downloading all the required files perfectly.
+
+Now we have a new, much simpler error related to the JMeter plugin's configuration.
+
+The New Problem Explained 💡
+The key part of the new error message is:
+C:\Users\USER\Downloads\my-jmeter-project\target\config.json (The system cannot find the file specified)
+
+The error message itself even gives you the solution! The JMeter Maven plugin works in two main steps:
+
+configure: It sets up the test environment. This includes downloading the correct version of Apache JMeter and creating necessary configuration files (like config.json).
+
+jmeter: It actually runs the test using the environment that was just set up.
+
+Your pom.xml file correctly tells Maven to run the jmeter step, but it's missing the instruction to run the configure step first.
+
+Analogy: You told a chef to cook a meal (jmeter goal) but never told them to preheat the oven or get the ingredients out of the fridge (configure goal). 👨‍🍳
+
+The Solution: Update Your pom.xml ✅
+You need to add a second <execution> block to your pom.xml to explicitly tell the plugin to run the configure step.
+
+Open your pom.xml file.
+
+Replace the entire content with the corrected code below. I've added the new required section and commented it for you.
+
+XML
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.mycompany.jmeter</groupId>
+    <artifactId>my-jmeter-project</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.lazerycode.jmeter</groupId>
+                <artifactId>jmeter-maven-plugin</artifactId>
+                <version>3.7.0</version>
+                <executions>
+                    <execution>
+                        <id>configuration</id>
+                        <goals>
+                            <goal>configure</goal>
+                        </goals>
+                    </execution>
+                    
+                    <execution>
+                        <id>jmeter-tests</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jmeter</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+What to Do Now
+Save the updated pom.xml file.
+
+Go back to your terminal in VS Code.
+
+Run the following command:
+
+Bash
+
+mvn clean verify
+(The clean part is good practice; it deletes the old target directory to ensure a fresh start.)
+
+This time, you should see it successfully download JMeter, configure it, execute your Test.jmx script, and finish with a BUILD SUCCESS message. Afterward, you will find your HTML report in the target/jmeter/reports directory as expected.
+
+
+
+
+
+
+
+
+no reports no html, got results in csv
+
+
+
+Show thinking
+Excellent, you've successfully run the test! The screenshot shows a BUILD SUCCESS and the .csv result file, which is a huge step forward. 🎉
+
+You're right, the HTML report is missing. This is happening because the JMeter Maven plugin separates running the test from generating the report. You've successfully run the test, but you need to explicitly tell Maven to generate the HTML dashboard.
+
+The Solution: Add the results Goal
+The fix is a simple one-line addition to your pom.xml file. You need to add the <goal>results</goal> to the execution that runs your tests.
+
+Open your pom.xml file.
+
+Find the <execution> block with the id jmeter-tests.
+
+Add the line <goal>results</goal> right after <goal>jmeter</goal>.
+
+Here is the corrected <executions> section. You can just replace your existing one with this.
+
+XML
+
+<executions>
+    <execution>
+        <id>configuration</id>
+        <goals>
+            <goal>configure</goal>
+        </goals>
+    </execution>
+    
+    <execution>
+        <id>jmeter-tests</id>
+        <phase>verify</phase>
+        <goals>
+            <goal>jmeter</goal>
+            <goal>results</goal> 
+        </goals>
+    </execution>
+</executions>
+What to Do Now
+Save your updated pom.xml file.
+
+Go to your VS Code terminal and run the test again using the clean command to ensure everything is fresh:
+
+Bash
+
+mvn clean verify
+After you see BUILD SUCCESS, check your target folder again. You will now see a new reports directory.
+
+Inside that folder, you will find your interactive HTML dashboard. Just open the index.html file in a browser. 📊
+
+Your file structure will look like this:
+
+target/
+└── jmeter/
+    ├── logs/
+    ├── results/
+    │   └── ... .csv
+    └── reports/  <-- THIS WILL NOW BE CREATED
+        └── ... /
+            └── index.html
+
+
+
+
+
+
+[INFO] Parsing results file 'C:\Users\USER\Downloads\my-jmeter-project\target\jmeter\results\20250917-Toolsvilla Loadtest plan.csv' as type: CSV
+
+[INFO]  
+
+[INFO] -------------------------------------------------------
+
+[INFO] P E R F O R M A N C E    T E S T    R E S U L T S
+
+[INFO] -------------------------------------------------------
+
+[INFO]
+
+[INFO] Result (.csv) files scanned: 1
+
+[INFO] Successful requests:         16
+
+[INFO] Failed requests:             1
+
+[INFO] Failures:                    5.88% (0.0% accepted)
+
+[INFO]
+
+[INFO] ------------------------------------------------------------------------
+
+[INFO] BUILD FAILURE
+
+[INFO] ------------------------------------------------------------------------
+
+[INFO] Total time:  7.542 s
+
+[INFO] Finished at: 2025-09-17T15:58:00+05:30
+
+[INFO] ------------------------------------------------------------------------
+
+[ERROR] Failed to execute goal com.lazerycode.jmeter:jmeter-maven-plugin:3.7.0:results (jmeter-tests) on project my-jmeter-project: Failing build because error percentage C:\Users\USER\Downloads\my-jmeter-project\target\jmeter\logs is above accepted threshold 5.88. JMeter logs are available at: '0.0' -> [Help 1]
+
+[ERROR]
+
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+
+[ERROR]
+
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+
+[INFO] Shutdown detected, destroying JMeter process...
+
+[INFO]
+
+PS C:\Users\USER\Downloads\my-jmeter-project> mvn clean verify
+
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+
+WARNING: sun.misc.Unsafe::staticFieldBase has been called by com.google.inject.internal.aop.HiddenClassDefiner (file:/C:/Program%20Files/Apache/Maven/apache-maven-3.9.11/lib/guice-5.1.0-classes.jar)
+
+WARNING: Please consider reporting this to the maintainers of class com.google.inject.internal.aop.HiddenClassDefiner
+
+WARNING: sun.misc.Unsafe::staticFieldBase will be removed in a future release
+
+[INFO] Scanning for projects...
+
+[INFO] 
+
+[INFO] ---------------< com.mycompany.jmeter:my-jmeter-project >---------------
+
+[INFO] Building my-jmeter-project 1.0-SNAPSHOT
+
+[INFO]   from pom.xml
+
+[INFO] --------------------------------[ jar ]---------------------------------
+
+[INFO] 
+
+[INFO] --- clean:3.2.0:clean (default-clean) @ my-jmeter-project ---
+
+[INFO] Deleting C:\Users\USER\Downloads\my-jmeter-project\target
+
+[INFO] 
+
+[INFO] --- resources:3.3.1:resources (default-resources) @ my-jmeter-project ---
+
+[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+
+[INFO] skip non existing resourceDirectory C:\Users\USER\Downloads\my-jmeter-project\src\main\resources
+
+[INFO]
+
+[INFO] --- compiler:3.13.0:compile (default-compile) @ my-jmeter-project ---
+
+[INFO] No sources to compile
+
+[INFO]
+
+[INFO] --- jmeter:3.7.0:configure (configuration) @ my-jmeter-project ---
+
+[INFO]  
+
+[INFO] -------------------------------------------------------
+
+[INFO] C O N F I G U R I N G    J M E T E R
+
+[INFO] -------------------------------------------------------
+
+[INFO]
+
+[INFO] Creating test configuration for execution ID: configuration
+
+[INFO] Building JMeter directory structure...
+
+[INFO] Generating JSON Test config...
+
+[INFO] Configuring JMeter artifacts...
+
+[INFO] Populating JMeter directory...
+
+[INFO] Copying extensions to C:\Users\USER\Downloads\my-jmeter-project\target\3418db22-5c8a-4b38-930e-40c59bb66520\jmeter\lib\ext
+
+[INFO] Downloading dependencies: true
+
+[INFO] Copying junit libraries to C:\Users\USER\Downloads\my-jmeter-project\target\3418db22-5c8a-4b38-930e-40c59bb66520\jmeter\lib\junit 
+
+[INFO] Downloading dependencies: true
+
+[INFO] Copying test plan libraries to C:\Users\USER\Downloads\my-jmeter-project\target\3418db22-5c8a-4b38-930e-40c59bb66520\jmeter\lib   
+
+[INFO] Downloading dependencies: true
+
+[INFO] Configuring JMeter properties...
+
+[INFO] 
+
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ my-jmeter-project ---
+
+[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+
+[INFO] skip non existing resourceDirectory C:\Users\USER\Downloads\my-jmeter-project\src\test\resources
+
+[INFO]
+
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ my-jmeter-project ---
+
+[INFO] No sources to compile
+
+[INFO]
+
+[INFO] --- surefire:3.2.5:test (default-test) @ my-jmeter-project ---
+
+[INFO] No tests to run.
+
+[INFO]
+
+[INFO] --- jar:3.4.1:jar (default-jar) @ my-jmeter-project ---
+
+[WARNING] JAR will be empty - no content was marked for inclusion!
+
+[INFO] Building jar: C:\Users\USER\Downloads\my-jmeter-project\target\my-jmeter-project-1.0-SNAPSHOT.jar
+
+[INFO] 
+
+[INFO] --- jmeter:3.7.0:jmeter (jmeter-tests) @ my-jmeter-project ---
+
+[INFO]
+
+[INFO] -------------------------------------------------------
+
+[INFO]  P E R F O R M A N C E    T E S T S
+
+[INFO] -------------------------------------------------------
+
+[INFO]
+
+[INFO] Executing test: Toolsvilla Loadtest plan.jmx
+
+[INFO] Arguments for forked JMeter JVM: [java, -Xms512M, -Xmx512M, -Djava.awt.headless=true, -jar, ApacheJMeter-5.5.jar, -d, C:\Users\USER\Downloads\my-jmeter-project\target\3418db22-5c8a-4b38-930e-40c59bb66520\jmeter, -j, C:\Users\USER\Downloads\my-jmeter-project\target\jmeter\logs\Toolsvilla Loadtest plan.jmx.log, -l, C:\Users\USER\Downloads\my-jmeter-project\target\jmeter\results\20250917-Toolsvilla Loadtest plan.csv, -n, -t, C:\Users\USER\Downloads\my-jmeter-project\target\jmeter\testFiles\Toolsvilla Loadtest plan.jmx, -Dsun.net.http.allowRestrictedHeaders, true]
+
+[INFO]
+
+[INFO] WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+
+[INFO] WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.thoughtworks.xstream.converters.reflection.SunUnsafeReflectionProvider (file:/C:/Users/USER/Downloads/my-jmeter-project/target/3418db22-5c8a-4b38-930e-40c59bb66520/jmeter/lib/xstream-1.4.19.jar)      
+
+[INFO] WARNING: Please consider reporting this to the maintainers of class com.thoughtworks.xstream.converters.reflection.SunUnsafeReflectionProvider
+
+[INFO] WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+
+[INFO] Creating summariser <summary>
+
+[INFO] Created the tree successfully using C:\Users\USER\Downloads\my-jmeter-project\target\jmeter\testFiles\Toolsvilla Loadtest plan.jmx
+
+[INFO] Starting standalone test @ 2025 Sep 17 15:59:04 GMT+05:30 (1758104944839)
+
+[INFO] Waiting for possible Shutdown/StopTestNow/HeapDump/ThreadDump message on port 4445
+
+[INFO] summary +      1 in 00:00:01 =    1.8/s Avg:   440 Min:   440 Max:   440 Err:     0 (0.00%) Active: 1 Started: 1 Finished: 0
+
+[INFO] summary +     14 in 00:00:02 =    7.3/s Avg:   136 Min:     0 Max:   439 Err:     1 (7.14%) Active: 0 Started: 1 Finished: 1
+
+[INFO] summary =     15 in 00:00:02 =    6.1/s Avg:   156 Min:     0 Max:   440 Err:     1 (6.67%)
+
+[INFO] Tidying up ...    @ 2025 Sep 17 15:59:07 GMT+05:30 (1758104947379)
+
+[INFO] ... end of run
+
+[INFO] Completed Test: C:\Users\USER\Downloads\my-jmeter-project\target\jmeter\testFiles\Toolsvilla Loadtest plan.jmx
+
+[INFO]
+
+[INFO]
+
+[INFO] --- jmeter:3.7.0:results (jmeter-tests) @ my-jmeter-project ---
+
+[INFO]
+
+[INFO] -------------------------------------------------------
+
+[INFO] S C A N N I N G    F O R    R E S U L T S
+
+[INFO] -------------------------------------------------------
+
+[INFO]
+
+[INFO] Will scan results using format: CSV
+
+[INFO]
+
+[INFO] Parsing results file 'C:\Users\USER\Downloads\my-jmeter-project\target\jmeter\results\20250917-Toolsvilla Loadtest plan.csv' as type: CSV
+
+[INFO]  
+
+[INFO] -------------------------------------------------------
+
+[INFO] P E R F O R M A N C E    T E S T    R E S U L T S
+
+[INFO] -------------------------------------------------------
+
+[INFO]
+
+[INFO] Result (.csv) files scanned: 1
+
+[INFO] Successful requests:         16
+
+[INFO] Failed requests:             1
+
+[INFO] Failures:                    5.88% (0.0% accepted)
+
+[INFO]
+
+[INFO] ------------------------------------------------------------------------
+
+[INFO] BUILD FAILURE
+
+[INFO] ------------------------------------------------------------------------
+
+[INFO] Total time:  7.519 s
+
+[INFO] Finished at: 2025-09-17T15:59:07+05:30
+
+[INFO] ------------------------------------------------------------------------
+
+[ERROR] Failed to execute goal com.lazerycode.jmeter:jmeter-maven-plugin:3.7.0:results (jmeter-tests) on project my-jmeter-project: Failing build because error percentage C:\Users\USER\Downloads\my-jmeter-project\target\jmeter\logs is above accepted threshold 5.88. JMeter logs are available at: '0.0' -> [Help 1]
+
+[ERROR]
+
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+
+[ERROR]
+
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+
+[INFO] Shutdown detected, destroying JMeter process...
+
+[INFO]
+
+PS C:\Users\USER\Downloads\my-jmeter-project> 
+
+
+
+
+Show thinking
+This is actually a good sign! 👍 Your pom.xml is now configured perfectly. The build is failing for a new, and very important, reason: your performance test itself had errors, and the plugin is correctly flagging it as a failure.
+
+This is a feature, not a bug. It's a quality gate to prevent bad performance from passing your build.
+
+The Problem Explained: A Built-in Quality Check 🚧
+Look at this key line from your error log:
+Failing build because error percentage ... is above accepted threshold 5.88. ... '0.0'
+
+Here's what it means:
+
+Your test ran and had a 5.88% error rate (1 failed request out of 17).
+
+By default, the JMeter Maven plugin has a 0.0% accepted error threshold.
+
+Since 5.88% is greater than 0.0%, the plugin intentionally fails the build to alert you that the application you're testing is producing errors under load.
+
+You have two ways to solve this, depending on your goal.
+
+Solution 1: Fix the Test (Recommended)
+The best practice is to investigate why the test is failing. An error rate of almost 6% is usually a sign of a real problem.
+
+Check the Logs: Navigate to target/jmeter/logs/ and open the .jmx.log file to see if JMeter reported any technical issues.
+
+Analyze the Results: The most valuable file is the .csv result file located at target/jmeter/results/. You can open this file in the JMeter GUI to see exactly which request failed and why.
+
+Open the JMeter GUI.
+
+Add a View Results Tree listener.
+
+In the "Filename" field of the listener, click "Browse..." and select your .csv file.
+
+JMeter will load the results. Click on the failed request (it will have a red icon) to see the full request, response code, and response data to understand why it failed.
+
+Solution 2: Increase the Error Threshold (If Errors are Acceptable)
+If you expect some small percentage of errors and want the build to pass anyway, you can configure the plugin to be more lenient.
+
+Open your pom.xml file.
+
+Add a <configuration> section to your jmeter-maven-plugin declaration and set an errorRateThresholdInPercent.
+
+Here is the complete <plugin> block with the new configuration added. Let's set the threshold to 10%, which is higher than your current error rate.
+
+XML
+
+<plugin>
+    <groupId>com.lazerycode.jmeter</groupId>
+    <artifactId>jmeter-maven-plugin</artifactId>
+    <version>3.7.0</version>
+    
+    <configuration>
+        <errorRateThresholdInPercent>10</errorRateThresholdInPercent>
+    </configuration>
+
+    <executions>
+        <execution>
+            <id>configuration</id>
+            <goals>
+                <goal>configure</goal>
+            </goals>
+        </execution>
+        <execution>
+            <id>jmeter-tests</id>
+            <phase>verify</phase>
+            <goals>
+                <goal>jmeter</goal>
+                <goal>results</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+What to Do Now ✅
+We strongly recommend trying Solution 1 first to be sure you don't have a real issue with your application.
+
+If you decide the errors are acceptable, implement Solution 2 by updating your pom.xml.
+
+Save the file and run the build again:
+
+Bash
+
+mvn clean verify
+With the error threshold increased, your build should now finish with BUILD SUCCESS, and you will finally find your HTML report in target/jmeter/reports/.
+
+
+
+
+
+
+
+before adding reports in pom.xml it was ok, now i have this in csv, why is the failure and also no reports generated
+
+
+
+timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,failureMessage,bytes,sentBytes,grpThreads,allThreads,URL,Latency,IdleTime,Connect
+
+1758105100754,398,productsRetrieveall Request,200,OK,Virtual user group 1-1,text,true,,30970,626,1,1,https://api.toolsvilla.com/web/productsRetrieveall,388,0,322
+
+1758105101153,64,product_getbyfield Request,200,OK,Virtual user group 1-1,text,true,,36354,276,1,1,https://api.toolsvilla.com/web/productGetByField/,61,0,0
+
+1758105101218,181,getrelated-products Request,200,OK,Virtual user group 1-1,text,true,,27710,634,1,1,https://api.toolsvilla.in/web/getRelatedProducts,178,0,97
+
+1758105101399,85,getBrandListProductsByCategory,200,OK,Virtual user group 1-1,text,true,,754,260,1,1,https://api.toolsvilla.in/web/getBrandListProductsByCategoryAndProductType,85,0,0
+
+1758105101484,62,getFreqBoughtProducts Request,200,OK,Virtual user group 1-1,text,true,,10518,231,1,1,https://api.toolsvilla.in/web/getFreqBoughtProducts,62,0,0
+
+1758105101547,128,Q&A_retrieveAll Request,200,OK,Virtual user group 1-1,text,true,,1683,325,1,1,http://api.toolsvilla.in/web/questionAnswerRetrieveAll,128,0,42
+
+1758105101675,63,get reviewby_productid Request,200,OK,Virtual user group 1-1,text,true,,2584,406,1,1,https://api.toolsvilla.com/web/reviewGetByProductId,63,0,0
+
+1758105101739,158,getBanners Request,200,OK,Virtual user group 1-1,text,true,,8860,268,1,1,https://api.toolsvilla.com/web/getBanners,98,0,45
+
+1758105101739,98,getBanners Request-0,301,Moved Permanently,Virtual user group 1-1,text,true,,781,134,1,1,http://api.toolsvilla.com/web/getBanners,98,0,45
+
+1758105101838,59,getBanners Request-1,200,OK,Virtual user group 1-1,text,true,,8079,134,1,1,https://api.toolsvilla.com/web/getBanners,59,0,0
+
+1758105101897,82,pincode availability check Request,200,OK,Virtual user group 1-1,text,true,,1246,483,1,1,https://api.toolsvilla.com/web/checkAvail/713213/1,82,0,0
+
+1758105101980,74,subcategories retrieve from categorypage Request,200,OK,Virtual user group 1-1,text,true,,37203,607,1,1,https://api.toolsvilla.com/web/productsRetrieveall,71,0,0
+
+1758105102054,65,questionAnswerCreate Request,201,Created,Virtual user group 1-1,text,true,,706,339,1,1,https://api.toolsvilla.com/web/questionAnswerCreate,65,0,0
+
+1758105102119,55,relatedcategorygetby id Request,200,OK,Virtual user group 1-1,text,true,,746,226,1,1,https://api.toolsvilla.com/web/relatedCategoryGetById/5d6045645012501e0c6f6b5c,55,0,0
+
+1758105102175,58,create cart Request,200,OK,Virtual user group 1-1,text,true,,689,1429,1,1,https://api.toolsvilla.com/web/cartsCreate,58,0,0
+
+1758105102233,62,clicking on fbt product Request,200,OK,Virtual user group 1-1,text,true,,644,200,1,1,https://api.toolsvilla.com/web/prdvw/SD-MP-21258-C1,62,0,0
+
+1758105102296,0,HTTP Request,Non HTTP response code: org.apache.http.client.ClientProtocolException,Non HTTP response message: URI does not specify a valid host name: http:/,Virtual user group 1-1,text,false,,1122,0,1,1,http:/,0,0,0
+
+
+
+
+Show thinking
+Of course. The CSV file you provided clearly shows why the build is failing.
+
+The build fails because your JMeter test script has a failed request, and the Maven plugin is correctly configured to stop the build if any errors are found. Reports are not generated because the process halts when it detects the failure.
+
+The Exact Error in Your Test 🎯
+The problem is in the very last line of your CSV results file.
+
+success,false,,1122,0,1,1,http:/,0,0,0
+
+Let's break down this specific failure:
+
+Success Column: It's marked false.
+
+Response Message: URI does not specify a valid host name: http:/
+
+URL Column: The URL is just http:/, which is an invalid web address.
+
+This means you have an "HTTP Request" sampler in your JMeter test plan that has a typo in the URL.
+
+Why This Fails the Build
+When you added the <goal>results</goal>, you activated the plugin's quality gate. By default, this gate is set to a 0% error tolerance. Since your test now has one failed request, the error rate is greater than 0%, so the plugin intentionally fails the build to alert you to the problem.
+
+This is a good thing—it's preventing you from accepting a broken test as a success.
+
+How to Fix It 🔧
+You need to correct the error in your JMeter test plan.
+
+Open your Toolsvilla Loadtest plan.jmx file in the JMeter GUI.
+
+Look through your Thread Group for an HTTP Request sampler that is either unlabeled or has an error.
+
+Find the one that has the invalid URL (http:/) in the Server Name or IP field.
+
+Correct this typo to be a valid URL (e.g., http://example.com).
+
+Save your .jmx file.
+
+After you've fixed the typo in your test plan, run the command again in VS Code:
+
+Bash
+
+mvn clean verify
+Your test should now pass with a 0% error rate, the build will succeed, and the HTML reports will be generated correctly. ✅
+
+
+
+
+
+
+
+Toolsvilla Loadtest plan.jmx teel me how will i do in vs code iteself
+
+
+
+Show thinking
+You can definitely edit your Toolsvilla Loadtest plan.jmx file directly in VS Code. A .jmx file is just a structured XML text file, and VS Code is a powerful text editor.
+
+This method is perfect for making small, quick changes, like fixing the URL typo you have.
+
+How to Edit the .jmx File in VS Code ✍️
+Here are the steps to find and fix the error directly in your editor.
+
+1. Open the File
+In the VS Code explorer on the left, navigate to src/test/jmeter and click on Toolsvilla Loadtest plan.jmx to open it. You will see a large block of XML code.
+
+2. Find the Error
+You know from the error log that the bad URL is http:/.
+
+Press Ctrl+F (or Cmd+F on Mac) to open the search bar in VS Code.
+
+Type http:/ into the search bar and press Enter. VS Code will immediately jump to the line with the error.
+
+3. Understand the XML Structure
+You will find the error inside an <HTTPSamplerProxy> element, which represents an HTTP Request sampler. It will look something like this:
+
+XML
+
+<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP Request" enabled="true">
+  <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+    <collectionProp name="Arguments.arguments"/>
+  </elementProp>
+  <stringProp name="HTTPSampler.domain"></stringProp> 
+  <stringProp name="HTTPSampler.port"></stringProp>
+  <stringProp name="HTTPSampler.protocol">http</stringProp>
+  <stringProp name="HTTPSampler.path">/</stringProp>
+  <stringProp name="HTTPSampler.method">GET</stringProp>
+</HTTPSamplerProxy>
+Your error is likely a typo in one of the stringProp elements like HTTPSampler.domain, HTTPSampler.protocol, or HTTPSampler.path.
+
+4. Correct the Error
+Let's say your broken URL http:/ was supposed to be https://api.toolsvilla.com/some/path. You would correct the XML properties like this:
+
+XML
+
+<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP Request" enabled="true">
+  <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+    <collectionProp name="Arguments.arguments"/>
+  </elementProp>
+  <stringProp name="HTTPSampler.domain">api.toolsvilla.com</stringProp>
+  <stringProp name="HTTPSampler.port"></stringProp>
+  <stringProp name="HTTPSampler.protocol">https</stringProp>
+  <stringProp name="HTTPSampler.path">/some/path</stringProp>
+  <stringProp name="HTTPSampler.method">GET</stringProp>
+</HTTPSamplerProxy>
+5. Save and Re-run
+Press Ctrl+S (or Cmd+S) to save the changes to your .jmx file.
+
+Go to your terminal and run the test again:
+
+Bash
+
+mvn clean verify
+The test should now pass, and your reports will be generated. ✅
+⚠️ Important Warning
+Editing .jmx files by hand is great for quick fixes, but it can be risky for complex changes.
+
+DO use VS Code to: Change a server name, update a URL path, or tweak a request parameter.
+
+DO NOT use VS Code to: Add new samplers, add logic controllers (like If/Loop), or delete elements. The XML structure is complex, and it's very easy to break the file.
+For any major changes, always use the JMeter GUI to ensure the file structure remains valid.
+
+
+
+
+
+
+
+<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP Request">
+
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+
+          <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+
+            <collectionProp name="Arguments.arguments"/>
+
+          </elementProp>
+
+        </HTTPSamplerProxy>
+
+        <hashTree/>
+
+      </hashTree>
+
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
+
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+
+        <objProp>
+
+          <name>saveConfig</name>
+
+          <value class="SampleSaveConfiguration">
+
+            <time>true</time>
+
+            <latency>true</latency>
+
+            <timestamp>true</timestamp>
+
+            <success>true</success>
+
+            <label>true</label>
+
+            <code>true</code>
+
+            <message>true</message>
+
+            <threadName>true</threadName>
+
+            <dataType>true</dataType>
+
+            <encoding>false</encoding>
+
+            <assertions>true</assertions>
+
+            <subresults>true</subresults>
+
+            <responseData>false</responseData>
+
+            <samplerData>false</samplerData>
+
+            <xml>false</xml>
+
+            <fieldNames>true</fieldNames>
+
+            <responseHeaders>false</responseHeaders>
+
+            <requestHeaders>false</requestHeaders>
+
+            <responseDataOnError>false</responseDataOnError>
+
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+
+            <bytes>true</bytes>
+
+            <sentBytes>true</sentBytes>
+
+            <url>true</url>
+
+            <threadCounts>true</threadCounts>
+
+            <idleTime>true</idleTime>
+
+            <connectTime>true</connectTime>
+
+          </value>
+
+        </objProp>
+
+        <stringProp name="filename"></stringProp>
+
+      </ResultCollector>
+
+      <hashTree/>
+
+    </hashTree>
+
+  </hashTree>
+
+</jmeterTestPlan>
+
+
+
+
+Show thinking
+You've found the exact source of the problem! The XML snippet you've shared is for the broken "HTTP Request" sampler.
+
+The Problem
+The issue is that your <HTTPSamplerProxy> block is missing the essential lines that define the URL. It doesn't have the properties for the protocol (http/https), the domain (the website name), or the path.
+
+This is why JMeter reports the error URI does not specify a valid host name—the sampler is completely empty and doesn't know where to send the request.
+
+The Solution 🔧
+You need to replace your broken XML block with a complete one.
+
+Find the broken <HTTPSamplerProxy> in your .jmx file that you posted above.
+
+Delete that entire block, from <HTTPSamplerProxy ...> to </HTTPSamplerProxy>.
+
+Replace it with the corrected code below.
+
+XML
+
+<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP Request" enabled="true">
+  <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+    <collectionProp name="Arguments.arguments"/>
+  </elementProp>
+  <stringProp name="HTTPSampler.domain">api.toolsvilla.com</stringProp>
+  <stringProp name="HTTPSampler.port"></stringProp>
+  <stringProp name="HTTPSampler.protocol">https</stringProp>
+  <stringProp name="HTTPSampler.path">/some/path</stringProp>
+  <stringProp name="HTTPSampler.method">GET</stringProp>
+  <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+  <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+  <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+  <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+  <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+  <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+  <stringProp name="HTTPSampler.response_timeout"></stringProp>
+</HTTPSamplerProxy>
+Customize the new code. Change the values for HTTPSampler.domain and HTTPSampler.path to match the actual URL you want to test.
+
+Save the Toolsvilla Loadtest plan.jmx file.
+
+Run the test again from your terminal:
+
+Bash
+
+mvn clean verify
+This will fix the test failure, allow your build to pass, and generate the HTML report. ✅
+
+
+
+
+
+
+
+
+still the same issue, was there an issue in pom.xml when said to update it for results folder
+
+
+
+Show thinking
+You've asked the perfect question. No, the changes to your pom.xml were correct. The results goal and the error threshold are standard configurations.
+
+This is a new and different error, and your screenshot gives us a huge clue as to what's wrong. I know this can be frustrating, but we're very close.
+
+The New Problem: A Corrupted .jmx File 💡
+The key error message has changed. It's no longer about the error percentage. It's now:
+Test failed with exit code: 1
+
+This is a general error that means the JMeter program itself crashed. The lines just before the failure tell us why:
+[INFO] path : /jmeterTestPlan/hashTree/hashTree
+[INFO] line number : 440
+
+This means JMeter failed while trying to read and parse your Toolsvilla Loadtest plan.jmx file. The manual edits we tried previously have accidentally broken the XML structure of the file around line 440. This is very easy to do and is a common risk when editing .jmx files by hand.
+
+The Solution: Rebuild the File with the JMeter GUI 🔧
+Manually finding and fixing broken XML is very difficult. The fastest and safest way to fix this is to let the JMeter GUI rebuild the file for you.
+
+Open JMeter: Launch the Apache JMeter application on your computer.
+
+Open Your Test Plan: Go to File > Open and select your src/test/jmeter/Toolsvilla Loadtest plan.jmx file.
+
+JMeter will likely show you an error message when it tries to open the file. This confirms the file is corrupted.
+
+Delete the Broken Sampler: In the test tree on the left, find the broken "HTTP Request" sampler that we were trying to fix before. Right-click on it and choose "Remove".
+
+Add a New Sampler: Right-click on your Thread Group and go to Add > Sampler > HTTP Request.
+
+Configure the New Sampler: Fill in the correct details for the new sampler (Protocol, Server Name, Path, etc.).
+
+Save the Plan: Go to File > Save. This will overwrite your broken .jmx file with a fresh, structurally correct version.
+
+Final Step ✅
+Now that you have a clean, valid .jmx file saved from the JMeter GUI:
+
+Go back to your VS Code terminal.
+
+Run the command one more time:
+
+Bash
+
+mvn clean verify
+This time, JMeter will be able to read the file correctly, your test will execute, and the build should finally succeed.
+
+
+
+
+
+
+
+
+no error messgae shown when opened, now what to do
+
+
+
+Show thinking
+That's great news! If it opened without an error, it means the file is easy to fix.
+
+The problem is still there, but now we can see it visually. Look at the last sampler in your test plan.
+
+Find and Remove the Broken Sampler 🎯
+In your screenshot, look at the bottom of the list under "Virtual user group". You will see a sampler named simply "HTTP Request".
+
+This is the default name for a blank, unconfigured sampler. This is the one causing your build to fail because it has no server name or path to test.
+
+Here's what to do:
+
+In the JMeter GUI, right-click on that last sampler named "HTTP Request".
+
+From the context menu, choose Remove.
+
+Click "Yes" to confirm. 🗑️
+
+The most important step: Go to File > Save to save the changes to your .jmx file. This will permanently remove the broken element.
+
+Final Step ✅
+Now that you've removed the bad sampler and saved the file:
+
+Go back to your terminal in VS Code.
+
+Run the command again:
+
+Bash
+
+mvn clean verify
+Your test plan is now clean, and the Maven build should finally run successfully.
+
+
+
+
+
+
+
+
+not getting html , run is succesful
+
+
+
+Show thinking
+Congratulations on the successful build! 🎉 You're right, the HTML report should be there.
+
+This happens for a simple reason: sometimes the plugin needs to be explicitly told to generate the final HTML dashboard, even when the results goal runs. We can fix this with one more small addition to the pom.xml.
+
+The Solution: Add the generateReports Flag ⚙️
+You need to add a <configuration> section to your plugin and set the <generateReports> flag to true. This leaves no doubt that you want the report to be created.
+
+Open your pom.xml file.
+
+Find the <plugin> section for the jmeter-maven-plugin.
+
+Replace your entire <plugin> block with the complete version below. This includes our previous fixes and adds the new flag.
+
+XML
+
+<plugin>
+    <groupId>com.lazerycode.jmeter</groupId>
+    <artifactId>jmeter-maven-plugin</artifactId>
+    <version>3.7.0</version>
+
+    <configuration>
+        <generateReports>true</generateReports>
+        <errorRateThresholdInPercent>10</errorRateThresholdInPercent>
+    </configuration>
+
+    <executions>
+        <execution>
+            <id>configuration</id>
+            <goals>
+                <goal>configure</goal>
+            </goals>
+        </execution>
+        <execution>
+            <id>jmeter-tests</id>
+            <phase>verify</phase>
+            <goals>
+                <goal>jmeter</goal>
+                <goal>results</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+Final Step ✅
+Now that you've told Maven to generate the report:
+
+Save the pom.xml file.
+
+Run the command in your terminal one last time:
+
+Bash
+
+mvn clean verify
+After the build succeeds, check your file explorer. A reports folder will now appear inside target/jmeter, and your index.html file will be inside it.
+
+
+
+
+
+
+
+
+
+i got html , shound i ignore this issue in pom.xml as i got my result?
+
+
+
+Show thinking
+Yes, you can ignore that message. Congratulations, you have successfully configured the entire process! 🎉
+
+That message is not a build error. It is a helpful warning from a VS Code extension that analyzes your pom.xml file.
+
+What the Warning Means
+The message "Plugin execution not covered by lifecycle configuration" is simply telling you that one of your <execution> blocks is missing a <phase> tag.
+
+Your jmeter-tests execution is correctly tied to the verify phase.
+
+Your configuration execution doesn't have a phase specified.
+It still works because the plugin has a default phase it runs in, but the VS Code extension is flagging it as a best-practice suggestion.
+
+How to Fix It (Optional but Recommended)
+To make the warning disappear and have a perfectly configured file, you can add the <phase> tag to the configuration block as well.
+
+Open your pom.xml.
+
+Find the <execution> block with the id configuration.
+
+Add the line <phase>verify</phase> to it.
+
+Here is the final, complete <executions> block. This is considered the best practice.
+
+XML
+
+<executions>
+    <execution>
+        <id>configuration</id>
+        <phase>verify</phase>
+        <goals>
+            <goal>configure</goal>
+        </goals>
+    </execution>
+    <execution>
+        <id>jmeter-tests</id>
+        <phase>verify</phase>
+        <goals>
+            <goal>jmeter</goal>
+            <goal>results</goal>
+        </goals>
+    </execution>
+</executions>
+After adding that one line and saving, the warning in VS Code will disappear.
+
+But to be clear: Your setup is working perfectly. You can consider this final tweak as optional code cleanup. Great job getting everything to run! ✨
