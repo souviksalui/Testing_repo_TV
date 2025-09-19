@@ -29,47 +29,36 @@ class UserBehavior(TaskSet):
     #         name="/api/products/[id]"
     #     )
 
-    # @task
-    # def add_to_cart(self):
-    #     """Simulates adding a product to the cart."""
-    #     # IMPORTANT: You need to find the correct API endpoint and payload
-    #     # by watching the Network tab in your browser when you add an item to the cart.
-    #     payload = {
-    #         "product_id": "EXAMPLE_PRODUCT_123",
-    #         "quantity": 1
-    #     }
-    #     self.client.post(
-    #         "/api/v1/cart/add",  # This is an example URL, find the real one
-    #         json=payload,
-    #         headers=self.headers,
-    #         name="/api/cart/add"
-    #     )
-        
-    # @task
-    # def view_checkout_page(self):
-    #     """Simulates viewing the checkout page."""
-    #     # Find the actual endpoint for viewing the cart or checkout page
-    #     self.client.post(
-    #         "web/cartGetByUser/65e005b8346e88099c21d811", # This is an example URL, find the real one //https://api.toolsvilla.com/web/cartGetByUser/65e005b8346e88099c21d811
-    #         json={"oCrt":"660fde26c881ab1d982b7701"},
-    #         headers=self.headers,
-    #         name="/api/getCart"
-    #     )
-
     @task
-    def my_order(self):
-           self.client.post(
-                "/micro/order/ordersRetrieveAll",
-               json = {"pageNo":1,"size":12,"filter":{"_id-objectId":"68c15357449a9f21dc198d8c"},"sortFilter":{"_id":1},"excludeField":{"orderId":1,"orderPlaceDate":1,"discountedPrice":1,"discount":1,"actualPrice":1,"paidAmt":1,"status":1,"tvValues":1,"deliveryNote":1,"products.productId.combination":1,"products.productId.categories":1,"products.productId.displayActualPrice":1,"products.productId.productName":1,"products.productId.urlKey":1,"products.productId.images":1,"products.productId._id":1,"products.quantity":1,"products.SKU":1,"products.selSubPrd":1,"products.tracks.docketNo":1,"products.tracks.productName":1,"products.tracks.shippingBy":1,"products.tracks.rStatus":1,"products.tracks.codAmt":1,"_id":1,"paymentMethod":1,"partialPayments":1,"shippingAddress":1,"couponAmt":1,"couponCode":1,"codCharges":1,"shippingPrice":1,"coinRefund":1,"userId":1,"isNoCostEmi":1,"noCostEmiDiscount":1,"pop":1,"popOther":1}},
-                headers=self.headers,
-                name="/micro/order/ordersRetrieveAll"
-            
+    def add_to_cart(self):
+        """Simulates adding a product to the cart."""
+        # IMPORTANT: You need to find the correct API endpoint and payload
+        # by watching the Network tab in your browser when you add an item to the cart.
+        payload = {
+            "product_id": "EXAMPLE_PRODUCT_123",
+            "quantity": 1
+        }
+        self.client.post(
+            "/api/v1/cart/add",  # This is an example URL, find the real one
+            json=payload,
+            headers=self.headers,
+            name="/api/cart/add"
+        )
+        
+    @task
+    def view_checkout_page(self):
+        """Simulates viewing the checkout page."""
+        # Find the actual endpoint for viewing the cart or checkout page
+        self.client.get(
+            "/api/v1/checkout", # This is an example URL, find the real one
+            headers=self.headers,
+            name="/api/checkout"
         )
 
 
 class WebsiteUser(HttpUser):
     # Set the host to the base URL of the API
-    host = "https://api.toolsvilla.com/" 
+    host = "https://www.toolsvilla.com" 
     tasks = [UserBehavior]
     min_wait = 1000  # 1 second
     max_wait = 5000  # 5 seconds
